@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PortfolioAI Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#256af4",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body class="bg-[#111111] font-display">
+<div class="relative flex min-h-screen w-full flex-col dark overflow-x-hidden">
+<div class="absolute top-4 left-4 z-10 lg:top-8 lg:left-8">
+<div class="flex items-center gap-2">
+<svg class="h-8 w-8 text-[#EAEAEA]" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+<path d="M2 17l10 5 10-5"></path>
+<path d="M2 12l10 5 10-5"></path>
+</svg>
+<p class="text-xl font-bold tracking-tight text-[#EAEAEA]">PortfolioAI</p>
+</div>
+</div>
+<div class="flex h-full min-h-screen grow flex-col">
+<div class="flex flex-1">
+<div class="grid w-full grid-cols-1 lg:grid-cols-2">
+<div class="relative hidden h-full flex-col items-center justify-center p-10 lg:flex">
+<div class="absolute inset-0 bg-center bg-no-repeat bg-cover" data-alt="Abstract 3D rendering of interconnected neural network nodes with blue and purple light trails on a dark background" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDF93f0llLhMVpeMZihGVG1m6RiibytAcHyMjbcnNcOw01Tm31Tuv0i1TDnOICZt1T-cxDzgTiWqj7IvvTGOovSgfzG6llaFi0w3VIRDZFhQdnyi4JFd8OhnAA0prX4wqT05wXIJCuCDK0sWJpTzzeu94qX8rsw7S--Pba1Xw1RNv1PqeX9iPKHkS8jg1I_CUwmmGBDG7XSPjkTuddIpkQ9cnj6_vknkDRym4mzm3mqofxij0dXt-ibVFwwcvmMHFJdCSTCd9EvoQw"); opacity: 0.3;'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-[#111111] via-transparent to-transparent"></div>
+</div>
+<div class="flex w-full items-center justify-center bg-[#1C1C1E] px-4 py-12 sm:px-6 lg:px-8">
+<div class="flex w-full max-w-md flex-col items-center gap-8">
+<div class="flex w-full flex-col gap-3 text-center">
+<p class="text-[#EAEAEA] text-4xl font-black leading-tight tracking-[-0.033em]">Welcome Back</p>
+<p class="text-[#888888] text-base font-normal leading-normal">Log in to manage your AI Portfolio Agent.</p>
+</div>
+<form id="loginForm" class="w-full space-y-4">
+<div id="errorMessage" class="hidden bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg text-sm"></div>
+<div class="flex max-w-full flex-wrap items-end gap-4">
+<label class="flex flex-col min-w-40 flex-1">
+<p class="text-[#EAEAEA] text-base font-medium leading-normal pb-2">Email Address</p>
+<input id="email" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#EAEAEA] focus:outline-0 border border-[#3b4354] bg-[#111111] focus:ring-2 focus:ring-offset-0 focus:ring-offset-[#111111] focus:ring-[#007BFF] focus:border-[#007BFF] h-14 placeholder:text-[#888888] p-[15px] text-base font-normal leading-normal" placeholder="you@example.com" type="email" required/>
+</label>
+</div>
+<div class="flex max-w-full flex-wrap items-end gap-4">
+<label class="flex flex-col min-w-40 flex-1">
+<p class="text-[#EAEAEA] text-base font-medium leading-normal pb-2">Password</p>
+<div class="flex w-full flex-1 items-stretch rounded-lg">
+<input id="password" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-l-lg text-[#EAEAEA] focus:outline-0 border border-[#3b4354] bg-[#111111] focus:ring-2 focus:ring-offset-0 focus:ring-offset-[#111111] focus:ring-[#007BFF] focus:border-[#007BFF] h-14 placeholder:text-[#888888] p-[15px] border-r-0 pr-2 text-base font-normal leading-normal" placeholder="Enter your password" type="password" required/>
+<div class="text-[#888888] flex border border-[#3b4354] bg-[#111111] items-center justify-center pr-[15px] rounded-r-lg border-l-0 group-focus-within:border-[#007BFF] group-focus-within:ring-2 group-focus-within:ring-offset-0 group-focus-within:ring-offset-[#111111] group-focus-within:ring-[#007BFF] cursor-pointer" onclick="togglePassword()">
+<span id="passwordToggle" class="material-symbols-outlined">visibility</span>
+</div>
+</div>
+</label>
+</div>
+<div class="flex justify-end">
+<a class="text-[#888888] hover:text-[#007BFF] text-sm font-normal leading-normal underline transition-colors" href="#">Forgot Password?</a>
+</div>
+</form>
+<div class="w-full space-y-6">
+<button id="loginBtn" type="submit" form="loginForm" class="flex h-14 w-full items-center justify-center rounded-lg bg-[#007BFF] px-4 py-2 text-base font-bold text-white transition-all duration-300 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-[#007BFF] focus:ring-offset-2 focus:ring-offset-[#1C1C1E] disabled:opacity-50 disabled:cursor-not-allowed">
+<span id="loginText">Login</span>
+<span id="loginSpinner" class="hidden ml-2">
+<svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+</svg>
+</span>
+</button>
+<div class="relative">
+<div class="absolute inset-0 flex items-center">
+<span class="w-full border-t border-[#3b4354]"></span>
+</div>
+<div class="relative flex justify-center text-xs uppercase">
+<span class="bg-[#1C1C1E] px-2 text-sm text-[#888888]">Or continue with</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex h-14 items-center justify-center gap-3 rounded-lg border border-[#3b4354] bg-transparent px-4 py-2 text-base font-medium text-[#EAEAEA] transition-colors hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-[#3b4354] focus:ring-offset-2 focus:ring-offset-[#1C1C1E]">
+<svg aria-hidden="true" class="h-5 w-5" data-icon="google" data-prefix="fab" focusable="false" role="img" viewbox="0 0 488 512" xmlns="http://www.w3.org/2000/svg">
+<path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 23.4 172.9 61.5l-62.7 62.7C337 97.2 296.3 80 248 80c-82.8 0-150.5 67.7-150.5 150.5S165.2 406.5 248 406.5c70.2 0 121.7-30.2 127.7-93.5H248v-85.3h236.1c2.3 12.7 3.9 26.9 3.9 41.4z" fill="currentColor"></path>
+</svg>
+                                        Google
+                                    </button>
+<button class="flex h-14 items-center justify-center gap-3 rounded-lg border border-[#3b4354] bg-transparent px-4 py-2 text-base font-medium text-[#EAEAEA] transition-colors hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-[#3b4354] focus:ring-offset-2 focus:ring-offset-[#1C1C1E]">
+<svg aria-hidden="true" class="h-5 w-5" data-icon="github" data-prefix="fab" focusable="false" role="img" viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg">
+<path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3.3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-27.9-112.3-124.3 0-27.5 10.1-49.9 26.4-67.5-2.6-6.2-11.5-32.2 2.6-66.2 0 0 21.1-6.7 69.2 25.8 20.1-5.6 41.6-8.3 62.1-8.3 20.5 0 42.1 2.7 62.1 8.3 48.1-32.4 69.2-25.8 69.2-25.8 14.1 34 5.2 60 2.6 66.2 16.3 17.6 26.4 40 26.4 67.5 0 96.6-56.4 118-112.3 124.2 9.1 7.9 17.3 23.5 17.3 47.4 0 34.2-.3 61.5-.3 70 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7z" fill="currentColor"></path>
+</svg>
+                                        GitHub
+                                    </button>
+</div>
+</div>
+<p class="text-[#888888] text-sm text-center">Don't have an account? <a class="font-bold text-[#EAEAEA] hover:text-[#007BFF] transition-colors" href="signup.html">Sign Up</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('passwordToggle');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.textContent = 'visibility_off';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.textContent = 'visibility';
+    }
+}
+
+function showError(message) {
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.textContent = message;
+    errorDiv.classList.remove('hidden');
+    
+    // Auto-hide error after 5 seconds
+    setTimeout(() => {
+        errorDiv.classList.add('hidden');
+    }, 5000);
+}
+
+function setLoading(isLoading) {
+    const loginBtn = document.getElementById('loginBtn');
+    const loginText = document.getElementById('loginText');
+    const loginSpinner = document.getElementById('loginSpinner');
+    
+    if (isLoading) {
+        loginBtn.disabled = true;
+        loginText.textContent = 'Logging in...';
+        loginSpinner.classList.remove('hidden');
+    } else {
+        loginBtn.disabled = false;
+        loginText.textContent = 'Login';
+        loginSpinner.classList.add('hidden');
+    }
+}
+
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    
+    // Basic validation
+    if (!email || !password) {
+        showError('Please fill in all fields');
+        return;
+    }
+    
+    if (!email.includes('@')) {
+        showError('Please enter a valid email address');
+        return;
+    }
+    
+    setLoading(true);
+    
+    try {
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Store token and redirect on success
+            localStorage.setItem('authToken', data.token);
+            localStorage.setItem('userId', data.userId);
+            window.location.href = 'onboarding.html';
+        } else {
+            // Show error message for invalid credentials
+            showError(data.error || 'Login failed. Please check your credentials.');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showError('Network error. Please check your connection and try again.');
+    } finally {
+        setLoading(false);
+    }
+});
+
+// Check if user is already logged in
+if (localStorage.getItem('authToken')) {
+    window.location.href = 'onboarding.html';
+}
+</script>
+</body></html>

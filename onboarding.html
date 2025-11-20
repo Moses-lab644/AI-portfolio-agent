@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Portfolio Agent Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#6D5BFF",
+              "background-light": "#f5f6f8",
+              "background-dark": "#101622",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+      .gradient-bg {
+        background-image: radial-gradient(circle at top, #2A204A40, transparent 40%);
+      }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex min-h-screen w-full flex-col items-center justify-center p-4 dark group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col items-center justify-center w-full max-w-2xl mx-auto py-12">
+<!-- Progress Bar -->
+<div class="w-full px-4 mb-12">
+<div class="flex items-center justify-between">
+<div class="flex flex-col items-center text-center relative">
+<div class="flex items-center justify-center size-8 rounded-full bg-primary text-white font-bold z-10">1</div>
+<p class="text-white text-sm font-medium mt-2">Connect</p>
+</div>
+<div class="flex-1 h-0.5 bg-[#282e39] mx-4"></div>
+<div class="flex flex-col items-center text-center relative">
+<div class="flex items-center justify-center size-8 rounded-full bg-[#282e39] text-[#9ca6ba] font-bold z-10">2</div>
+<p class="text-[#9ca6ba] text-sm font-medium mt-2">Syncing</p>
+</div>
+<div class="flex-1 h-0.5 bg-[#282e39] mx-4"></div>
+<div class="flex flex-col items-center text-center relative">
+<div class="flex items-center justify-center size-8 rounded-full bg-[#282e39] text-[#9ca6ba] font-bold z-10">3</div>
+<p class="text-[#9ca6ba] text-sm font-medium mt-2">Create Persona</p>
+</div>
+</div>
+</div>
+<!-- Main Card -->
+<div class="w-full rounded-xl bg-[#242428]/50 border border-white/10 shadow-2xl shadow-primary/10 overflow-hidden gradient-bg">
+<div class="p-8">
+<!-- Page Heading -->
+<div class="flex flex-wrap justify-between gap-3 mb-8">
+<div class="flex flex-col gap-2">
+<p class="text-white text-3xl font-black leading-tight tracking-tight">Connect Your Digital Footprint</p>
+<p class="text-[#9ca6ba] text-base font-normal leading-normal">Link your professional accounts to build a comprehensive profile for your AI agent.</p>
+</div>
+</div>
+<!-- Connection Forms Container -->
+<div class="flex flex-col gap-4">
+<!-- GitHub Form -->
+<div class="bg-[#101622]/50 border border-white/10 rounded-lg p-4">
+<div class="flex items-center gap-4 mb-4">
+<div class="text-white flex items-center justify-center rounded-lg bg-[#282e39] shrink-0 size-12">
+<span class="material-symbols-outlined" style="font-size: 28px;">code</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-white text-base font-medium leading-normal">GitHub</p>
+<p class="text-[#9ca6ba] text-sm font-normal leading-normal">Showcase your code and contributions.</p>
+</div>
+</div>
+<form id="githubForm" class="space-y-3">
+<input type="text" name="username" placeholder="GitHub username" class="w-full px-3 py-2 bg-[#282e39] border border-white/10 rounded-lg text-white placeholder-[#9ca6ba] focus:outline-none focus:border-primary" required>
+<button type="submit" class="w-full h-9 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors duration-200">
+Connect GitHub
+</button>
+</form>
+</div>
+
+<!-- LinkedIn Form -->
+<div class="bg-[#101622]/50 border border-white/10 rounded-lg p-4">
+<div class="flex items-center gap-4 mb-4">
+<div class="text-white flex items-center justify-center rounded-lg bg-[#282e39] shrink-0 size-12">
+<span class="material-symbols-outlined" style="font-size: 28px;">group</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-white text-base font-medium leading-normal">LinkedIn</p>
+<p class="text-[#9ca6ba] text-sm font-normal leading-normal">Import your professional experience and network.</p>
+</div>
+</div>
+<form id="linkedinForm" class="space-y-3">
+<input type="url" name="profileUrl" placeholder="LinkedIn profile URL" class="w-full px-3 py-2 bg-[#282e39] border border-white/10 rounded-lg text-white placeholder-[#9ca6ba] focus:outline-none focus:border-primary" required>
+<button type="submit" class="w-full h-9 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors duration-200">
+Connect LinkedIn
+</button>
+</form>
+</div>
+
+<!-- Dribbble Form -->
+<div class="bg-[#101622]/50 border border-white/10 rounded-lg p-4">
+<div class="flex items-center gap-4 mb-4">
+<div class="text-white flex items-center justify-center rounded-lg bg-[#282e39] shrink-0 size-12">
+<span class="material-symbols-outlined" style="font-size: 28px;">palette</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-white text-base font-medium leading-normal">Dribbble</p>
+<p class="text-[#9ca6ba] text-sm font-normal leading-normal">Display your design portfolio and creative work.</p>
+</div>
+</div>
+<form id="dribbbleForm" class="space-y-3">
+<input type="text" name="username" placeholder="Dribbble username" class="w-full px-3 py-2 bg-[#282e39] border border-white/10 rounded-lg text-white placeholder-[#9ca6ba] focus:outline-none focus:border-primary" required>
+<button type="submit" class="w-full h-9 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors duration-200">
+Connect Dribbble
+</button>
+</form>
+</div>
+
+<!-- Medium Form -->
+<div class="bg-[#101622]/50 border border-white/10 rounded-lg p-4">
+<div class="flex items-center gap-4 mb-4">
+<div class="text-white flex items-center justify-center rounded-lg bg-[#282e39] shrink-0 size-12">
+<span class="material-symbols-outlined" style="font-size: 28px;">article</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-white text-base font-medium leading-normal">Medium</p>
+<p class="text-[#9ca6ba] text-sm font-normal leading-normal">Share your articles and thought leadership.</p>
+</div>
+</div>
+<form id="mediumForm" class="space-y-3">
+<input type="text" name="username" placeholder="Medium username" class="w-full px-3 py-2 bg-[#282e39] border border-white/10 rounded-lg text-white placeholder-[#9ca6ba] focus:outline-none focus:border-primary" required>
+<button type="submit" class="w-full h-9 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors duration-200">
+Connect Medium
+</button>
+</form>
+</div>
+</div>
+</div>
+<!-- Card Footer -->
+<div class="bg-black/20 border-t border-white/10 p-6 flex justify-between items-center">
+<button class="text-[#9ca6ba] text-sm font-medium hover:text-white transition-colors duration-200" onclick="window.location.href='dashboard.html'">Skip for now</button>
+<button class="flex items-center justify-center rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold leading-normal shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all duration-200" onclick="window.location.href='dashboard.html'">
+<span class="truncate">Next: Sync Data</span>
+<span class="material-symbols-outlined ml-2">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+// Check authentication on page load
+function checkAuth() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        window.location.href = '/login.html';
+        return;
+    }
+    
+    // Verify token is still valid
+    fetch('/api/auth/verify', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userId');
+            window.location.href = '/login.html';
+        }
+    })
+    .catch(error => {
+        console.error('Auth verification failed:', error);
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userId');
+        window.location.href = '/login.html';
+    });
+}
+
+// Handle form submissions
+function handlePlatformConnection(platform, formData) {
+    const token = localStorage.getItem('authToken');
+    
+    fetch(`/api/portfolio/connect/${platform}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message and update UI
+            const form = document.getElementById(`${platform}Form`);
+            form.innerHTML = `<div class="flex items-center gap-2 text-[#03DAC6] justify-center py-2">
+                <span class="material-symbols-outlined">check_circle</span>
+                <span class="text-sm font-medium">Connected</span>
+            </div>`;
+        } else {
+            alert(`Failed to connect ${platform}: ${data.message}`);
+        }
+    })
+    .catch(error => {
+        console.error(`Error connecting ${platform}:`, error);
+        alert(`Error connecting ${platform}`);
+    });
+}
+
+// Form event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // GitHub form
+    document.getElementById('githubForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        handlePlatformConnection('github', {
+            username: formData.get('username')
+        });
+    });
+    
+    // LinkedIn form
+    document.getElementById('linkedinForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        handlePlatformConnection('linkedin', {
+            profileUrl: formData.get('profileUrl')
+        });
+    });
+    
+    // Dribbble form
+    document.getElementById('dribbbleForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        handlePlatformConnection('dribbble', {
+            username: formData.get('username')
+        });
+    });
+    
+    // Medium form
+    document.getElementById('mediumForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        handlePlatformConnection('medium', {
+            username: formData.get('username')
+        });
+    });
+});
+
+// Run auth check when page loads
+checkAuth();
+</script>
+</body></html>

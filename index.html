@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>AI-Powered Portfolio Agent — Demo</title>
+		<meta name="description" content="Connect your portfolio accounts and generate an AI assistant that answers client questions about your work." />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+		<style>
+			:root{
+				--bg:#0f1724; --card:#0b1220; --muted:#9aa4b2; --accent:#7c5cff; --glass: rgba(255,255,255,0.04);
+				--success:#22c55e; --danger:#ff6b6b; --radius:14px; --max:1100px;
+			}
+			*{box-sizing:border-box}
+			html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#e6eef8;background:linear-gradient(180deg,#071023 0%, #071428 60%);}
+			.container{max-width:var(--max);margin:40px auto;padding:32px}
+			header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+			.brand{display:flex;gap:14px;align-items:center}
+			.logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#3ad7ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;box-shadow:0 6px 18px rgba(124,92,255,0.18)}
+			nav{display:flex;gap:18px;align-items:center}
+			nav a{color:var(--muted);text-decoration:none;font-weight:600}
+			.cta{background:var(--accent);color:white;padding:10px 16px;border-radius:10px;font-weight:700;box-shadow:0 6px 20px rgba(124,92,255,0.18);cursor:pointer}
+
+			.hero{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start}
+			.card{background:linear-gradient(180deg,var(--card), rgba(255,255,255,0.02));padding:28px;border-radius:var(--radius);box-shadow:0 8px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+			h1{font-size:32px;margin:0 0 8px;color:#f8fbff}
+			p.lead{margin:0;color:var(--muted);line-height:1.5}
+
+			.features{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+			.chip{background:var(--glass);padding:8px 12px;border-radius:12px;color:#cfe3ff;font-weight:600;font-size:13px}
+
+			/* Right preview */
+			.preview{position:relative}
+			.agent-card{height:560px;width:100%;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+			.agent-top{padding:16px;background:linear-gradient(90deg,rgba(255,255,255,0.02),transparent);display:flex;justify-content:space-between;align-items:center}
+			.agent-title{display:flex;gap:12px;align-items:center}
+			.agent-avatar{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#ffd86b,#ff8a8a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#081126}
+			.agent-body{flex:1;padding:18px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg,rgba(10,16,28,0.4),transparent)}
+			.bubble{max-width:78%;padding:12px 14px;border-radius:12px;font-size:14px;line-height:1.4}
+			.you{align-self:flex-end;background:linear-gradient(90deg,#134e4a,#0ea5a8);color:white;border-bottom-right-radius:4px}
+			.bot{align-self:flex-start;background:linear-gradient(90deg,#0b1220,#13263b);color:#cfe3ff;border-bottom-left-radius:4px;border:1px solid rgba(255,255,255,0.03)}
+			.agent-input{display:flex;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);align-items:center;gap:10px}
+			.agent-input input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#e6eef8}
+			.btn{padding:10px 14px;border-radius:10px;border:0;background:var(--accent);color:white;font-weight:700;cursor:pointer}
+
+			/* Connectors + Steps */
+			.connectors{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+			.connector{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.02)}
+			.connector .icon{width:44px;height:44px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);display:flex;align-items:center;justify-content:center;font-weight:700}
+			.connector .name{font-weight:700;color:#f8fbff}
+			.muted{color:var(--muted);font-size:13px}
+
+			/* Onboarding modal */
+			.modal-backdrop{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,23,0.6),rgba(2,6,23,0.85));display:none;align-items:center;justify-content:center;padding:24px;z-index:1000}
+			.modal{width:720px;max-width:calc(100% - 48px)}
+			.stepper{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+			.step{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.02);color:var(--muted);font-weight:700}
+
+			footer{margin-top:32px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+
+			@media (max-width:980px){.hero{grid-template-columns:1fr}.preview{order:2}.card{padding:20px}}
+			@media (max-width:560px){.connectors{grid-template-columns:repeat(1,1fr)}nav{display:none}}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<div class="brand">
+					<div class="logo">AI</div>
+					<div>
+						<div style="font-weight:800;color:white">Portfolio Agent</div>
+						<div style="font-size:12px;color:var(--muted)">AI assistants for your professional portfolio</div>
+					</div>
+				</div>
+				<nav>
+					<a href="#features">Features</a>
+					<a href="#connect">Connectors</a>
+					<a href="#pricing">Pricing</a>
+					<a href="login.html">Login</a>
+					<a href="signup.html" class="cta">Sign Up</a>
+				</nav>
+			</header>
+
+			<main class="hero">
+				<section class="card">
+					<h1>Turn your portfolio into a 24/7 client-facing AI assistant</h1>
+					<p class="lead">Connect GitHub, LinkedIn, Dribbble, Medium and your website. We'll analyze your projects and create a smart agent clients can chat with — triage leads, answer scope questions, and surface your best work.</p>
+
+					<div class="features" style="margin-top:18px">
+						<div class="chip">Auto-curated work highlights</div>
+						<div class="chip">Contextual answers from your content</div>
+						<div class="chip">Custom personality & tone</div>
+						<div class="chip">Secure private indexing</div>
+					</div>
+
+					<h3 style="margin-top:22px;color:#dbe8ff">Connectors</h3>
+					<div class="connectors" id="connectors">
+						<div class="connector"><div class="icon">GH</div><div><div class="name">GitHub</div><div class="muted">Commits, repos, READMEs</div></div></div>
+						<div class="connector"><div class="icon">IN</div><div><div class="name">LinkedIn</div><div class="muted">Experience, posts</div></div></div>
+						<div class="connector"><div class="icon">DB</div><div><div class="name">Dribbble</div><div class="muted">Designs & shots</div></div></div>
+						<div class="connector"><div class="icon">MD</div><div><div class="name">Medium</div><div class="muted">Articles & essays</div></div></div>
+						<div class="connector"><div class="icon">WWW</div><div><div class="name">Website</div><div class="muted">Pages & case studies</div></div></div>
+						<div class="connector"><div class="icon">CSV</div><div><div class="name">Upload</div><div class="muted">Custom files</div></div></div>
+					</div>
+
+					<div style="display:flex;gap:12px;margin-top:20px">
+						<button class="btn" onclick="window.location.href='signup.html'">Create demo account</button>
+						<button class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06)">Explore integrations</button>
+					</div>
+
+					<div style="margin-top:20px;color:var(--muted);font-size:13px">Trusted by thousands of designers & engineers. <span style="color:var(--accent);font-weight:700">No credit card required</span></div>
+				</section>
+
+				<aside class="preview card">
+					<div class="agent-card">
+						<div class="agent-top">
+							<div class="agent-title"><div class="agent-avatar">PA</div><div><div style="font-weight:800;color:#f8fbff">Portfolio Agent</div><div class="muted">Based on GitHub, LinkedIn & website</div></div></div>
+							<div style="display:flex;gap:8px;align-items:center"><div class="muted">Live demo</div><div class="chip">v1.0</div></div>
+						</div>
+						<div class="agent-body" id="chat">
+							<div class="bubble bot">Hi — I'm your Portfolio Agent. Ask me about any project, or request a case study summary.</div>
+							<div class="bubble you">Can you summarize the 'Realtime Dashboard' project?</div>
+							<div class="bubble bot">Realtime Dashboard is a monitoring tool built with React + D3. It visualizes metrics, supports custom alerts, and integrates with Prometheus. The repo has CI tests and a live demo link.</div>
+							<div class="bubble bot" style="font-size:13px;color:var(--muted)">Tip: Connect more sources for richer answers (LinkedIn, Dribbble).</div>
+						</div>
+						<div class="agent-input">
+							<input placeholder="Ask your agent — e.g. 'Show me your best React projects'" />
+							<button class="btn">Send</button>
+						</div>
+					</div>
+				</aside>
+			</main>
+
+			<footer>
+				<div>© 2025 Portfolio Agent</div>
+				<div class="muted">Built for professionals — privacy-first indexing</div>
+			</footer>
+		</div>
+
+		<!-- Onboarding modal -->
+		<div class="modal-backdrop" id="modal">
+			<div class="modal card">
+				<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+					<div>
+						<div style="font-weight:800;color:#f8fbff">Create your Agent</div>
+						<div class="muted">3 steps — connect sources, customize tone, finalize</div>
+					</div>
+					<div style="display:flex;gap:8px">
+						<button class="btn" onclick="finishAgent()">Finish</button>
+						<button class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.04)" onclick="closeModal()">Close</button>
+					</div>
+				</div>
+
+				<div class="stepper">
+					<div class="step">1. Connect</div>
+					<div class="step">2. Persona</div>
+					<div class="step">3. Deploy</div>
+				</div>
+
+				<div style="display:grid;grid-template-columns:1fr 280px;gap:16px">
+					<div>
+						<h4 style="margin:8px 0;color:#dfefff">Connect accounts</h4>
+						<p class="muted">We only fetch public info and content you allow. OAuth flows can be completed securely in your account.</p>
+						<div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+							<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" checked/> GitHub</label>
+							<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" checked/> LinkedIn</label>
+							<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" /> Dribbble</label>
+							<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" /> Medium</label>
+							<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" /> Website</label>
+						</div>
+					</div>
+					<div>
+						<h4 style="margin:8px 0;color:#dfefff">Agent preview</h4>
+						<div style="background:rgba(153, 147, 147, 0.02);padding:12px;border-radius:10px">
+							<div style="font-weight:700;color:#f8fbff">Tone: Professional</div>
+							<div class="muted" style="margin-top:6px">Personality: Concise, helpful, recruiter-friendly</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			function openModal() {
+				document.getElementById('modal').style.display = 'flex';
+			}
+			
+			function closeModal() {
+				document.getElementById('modal').style.display = 'none';
+			}
+			
+			function finishAgent() {
+				closeModal();
+				const chat = document.getElementById('chat');
+				const msg = document.createElement('div');
+				msg.className = 'bubble bot';
+				msg.textContent = '🎉 Agent created! Share this chat with clients or embed on your website.';
+				chat.appendChild(msg);
+				chat.scrollTop = chat.scrollHeight;
+			}
+		</script>
+	</body>
+</html>
