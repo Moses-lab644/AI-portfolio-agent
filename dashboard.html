@@ -53,7 +53,7 @@
 <path d="M12 14.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm0-9c.83 0 1.5.67 1.5 1.5S12.83 8.5 12 8.5s-1.5-.67-1.5-1.5S11.17 5.5 12 5.5z"></path>
 </svg>
 </div>
-<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">AetherAgent</h2>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]" id="brandName">Loading...</h2>
 <div class="flex items-center gap-2 ml-4">
 <div class="relative">
 <button onclick="toggleProfileDropdown()" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
@@ -79,19 +79,15 @@ Logout
 </div>
 </div>
 </div>
-<button onclick="logout()" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
-<span class="material-symbols-outlined text-base">logout</span>
-Logout
-</button>
 </div>
 </div>
 <div class="hidden md:flex flex-1 items-center justify-center gap-9">
-<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Dashboard</a>
-<a class="text-gray-400 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Analytics</a>
-<a class="text-gray-400 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Settings</a>
+<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="dashboard.html">Dashboard</a>
+<a class="text-gray-400 text-sm font-medium leading-normal hover:text-primary transition-colors" href="javascript:alert('Analytics coming soon')">Analytics</a>
+<a class="text-gray-400 text-sm font-medium leading-normal hover:text-primary transition-colors" href="settings.html">Settings</a>
 </div>
 <div class="flex flex-1 justify-end gap-3">
-<button class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-[#1C1C24] text-white transition-colors hover:bg-white/10">
+<button onclick="toggleNotifications()" class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-[#1C1C24] text-white transition-colors hover:bg-white/10">
 <span class="material-symbols-outlined text-[#EAEAEB]">notifications</span>
 </button>
 <div id="userAvatar" onclick="openProfileModal()" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer hover:ring-2 hover:ring-primary transition-all" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCZQ5VKNUekdFMuJBPmLhci7jOShPslwCqvwoUpVIY_8VsyxkUI_HlxR2fu3n1gtEbQhLcagvmuP9ad7qDOC7oQnS9PfnLlBmz-qISTVImL_lTrXmDVT0D1roQEQ5bvTMJQfr8rHf6OnAed_DkordHrJyJbGFfIMBkVvWrdnwrig03_8hxRlzvMjVSP9PXf3WPg9Fpqa-l71lywjDrb73iw2Mp9fBbjkSZGToyRUBXC8L4kA1QvzNYN6jEcA-H1kK9JBQGlTr7FKis");'></div>
@@ -102,7 +98,7 @@ Logout
 <!-- PageHeading -->
 <div class="flex flex-wrap justify-between gap-4 mb-8">
 <div class="flex min-w-72 flex-col gap-2">
-<p class="text-white text-4xl font-bold leading-tight tracking-tight">Welcome Back, Dr. Sharma</p>
+<p id="welcomeText" class="text-white text-2xl font-bold leading-tight tracking-tight">Welcome Back</p>
 <p class="text-[#8A8A93] text-base font-normal leading-normal">Here's a snapshot of your AI agent's performance and status.</p>
 </div>
 </div>
@@ -146,6 +142,9 @@ Logout
 </div>
 <div class="rounded-full bg-[#3b4354] h-2"><div class="h-2 rounded-full bg-primary" style="width: 85%;"></div></div>
 <p class="text-[#8A8A93] text-sm font-normal leading-normal">Add your recent publications to complete your profile.</p>
+<button onclick="window.location.href='/onboarding.html'" class="mt-2 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-medium leading-normal hover:bg-primary/90 transition-colors">
+<span class="truncate">Improve Profile</span>
+</button>
 </div>
 <!-- Connected Sources Card -->
 <div class="flex flex-col gap-4 rounded-xl bg-[#1C1C24] p-6 border border-white/10">
@@ -179,7 +178,7 @@ Logout
 </div>
 </div>
 </div>
-<button class="mt-2 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white/10 text-white text-sm font-medium leading-normal hover:bg-white/20 transition-colors">
+<button onclick="window.location.href='/onboarding.html'" class="mt-2 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white/10 text-white text-sm font-medium leading-normal hover:bg-white/20 transition-colors">
 <span class="truncate">Manage Connections</span>
 </button>
 </div>
@@ -242,13 +241,21 @@ Save Changes
 <script>
 // Check authentication on page load
 function checkAuth() {
-    const token = localStorage.getItem('authToken');
+    // Accept 'token' from signup/OAuth or 'authToken' from login
+    let token = localStorage.getItem('authToken');
+    if (!token) {
+        token = localStorage.getItem('token');
+        if (token) {
+            localStorage.setItem('authToken', token);
+        }
+    }
+    
     if (!token) {
         window.location.href = '/login.html';
         return;
     }
     
-    // Verify token is still valid
+    // Verify token is still valid (optional - can be skipped for better UX)
     fetch('/api/auth/verify', {
         method: 'GET',
         headers: {
@@ -257,16 +264,16 @@ function checkAuth() {
     })
     .then(response => {
         if (!response.ok) {
+            console.warn('Token verification failed, clearing auth');
             localStorage.removeItem('authToken');
+            localStorage.removeItem('token');
             localStorage.removeItem('userId');
             window.location.href = '/login.html';
         }
     })
     .catch(error => {
-        console.error('Auth verification failed:', error);
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('userId');
-        window.location.href = '/login.html';
+        // Don't redirect on network error - let user stay on page
+        console.warn('Auth verification error:', error);
     });
 }
 
@@ -317,16 +324,23 @@ function shareLink() {
 // Logout function
 function logout() {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
     localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
     window.location.href = 'login.html';
 }
 
 // Load user data on page load
 function loadUserData() {
-    const token = localStorage.getItem('authToken');
+    let token = localStorage.getItem('authToken');
+    if (!token) {
+        token = localStorage.getItem('token');
+    }
     if (!token) return;
     
-    // Fetch user profile
+    const userId = localStorage.getItem('userId');
+    
+    // Fetch user profile from API
     fetch('/api/user/profile', {
         headers: {
             'Authorization': `Bearer ${token}`
@@ -334,29 +348,52 @@ function loadUserData() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.name) {
+        if (data.name || data.email) {
             // Update welcome message with actual user name
-            const welcomeText = document.querySelector('.text-4xl');
+            const welcomeText = document.getElementById('welcomeText');
             if (welcomeText) {
-                welcomeText.textContent = `Welcome Back, ${data.name}`;
+                const displayName = data.name || 'User';
+                welcomeText.textContent = `Welcome Back, ${displayName}`;
+            }
+            // Update brand name with user name
+            const brandName = document.getElementById('brandName');
+            if (brandName && data.name) {
+                brandName.textContent = data.name;
+            }
+            console.log('User profile loaded:', data.email);
+        }
+    })
+    .catch(error => {
+        // Fallback: use name from localStorage if API fails
+        const localName = localStorage.getItem('userName');
+        if (localName) {
+            const welcomeText = document.getElementById('welcomeText');
+            if (welcomeText) {
+                welcomeText.textContent = `Welcome Back, ${localName}`;
+            }
+            const brandName = document.getElementById('brandName');
+            if (brandName) {
+                brandName.textContent = localName;
             }
         }
-    })
-    .catch(error => console.error('Error loading user data:', error));
+        console.error('Error loading user data:', error);
+    });
     
-    // Fetch connected platforms
-    fetch('/api/portfolio/connections', {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.connections) {
-            updateConnectedSources(data.connections);
-        }
-    })
-    .catch(error => console.error('Error loading connections:', error));
+    // Fetch connected platforms if userId available
+    if (userId) {
+        fetch(`/api/portfolio/connections/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+                updateConnectedSources(data);
+            }
+        })
+        .catch(error => console.error('Error loading connections:', error));
+    }
 }
 
 // Update connected sources display
@@ -384,6 +421,26 @@ function closeProfileDropdown() {
     const arrow = document.getElementById('profileArrow');
     dropdown.classList.add('hidden');
     arrow.style.transform = 'rotate(0deg)';
+}
+
+// Notification functions
+function toggleNotifications() {
+    try {
+        const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+        if (notifications.length === 0) {
+            alert('No notifications yet. Connect accounts on the onboarding page to receive notifications!');
+        } else {
+            const notificationList = notifications
+                .map(n => `• ${n.message} (${new Date(n.timestamp).toLocaleString()})`)
+                .join('\n');
+            alert(`Notifications:\n\n${notificationList}`);
+            // Mark all as read
+            notifications.forEach(n => n.read = true);
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+        }
+    } catch (e) {
+        alert('Notifications coming soon! You\'ll receive updates about your connected accounts and profile activity here.');
+    }
 }
 
 function viewProfile() {

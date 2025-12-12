@@ -1,15 +1,18 @@
 <!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Portfolio Chat</title>
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>AI Portfolio Agent Chat</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+  <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
@@ -19,280 +22,124 @@
             "background-light": "#f5f6f8",
             "background-dark": "#101622",
           },
-          fontFamily: {
-            "display": ["Inter", "sans-serif"]
-          },
-          borderRadius: {
-            "DEFAULT": "0.25rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          },
+          fontFamily: { "display": ["Inter","sans-serif"] },
         },
       },
-    }
+    };
   </script>
-<style>
+
+  <style>
+    html, body { margin:0; height:100%; overflow:hidden; }
     .material-symbols-outlined {
-      font-variation-settings:
-        'FILL' 0,
-        'wght' 400,
-        'GRAD' 0,
-        'opsz' 24
+      font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
     }
   </style>
 </head>
+
 <body class="bg-background-light dark:bg-[#121212] font-display">
-<div class="relative flex h-screen w-full flex-col overflow-hidden">
-<div class="flex h-full flex-1">
-<!-- Main Content -->
-<main class="flex h-full flex-1 flex-col transition-all duration-300">
-<!-- Header -->
-<header class="flex h-[72px] shrink-0 items-center justify-between border-b border-white/10 bg-[#1A1A1A]/50 px-6 backdrop-blur-sm">
-<div class="flex items-center gap-4">
-<div class="relative">
+<div class="flex h-screen w-full">
 
-</div>
-<div class="flex flex-col">
+  <!-- MAIN CHAT -->
+  <main class="flex flex-1 flex-col">
 
-<p class="text-[#A0A0A0] text-sm font-normal leading-normal">Lead UX Architect &amp; AI Ethicist</p>
-</div>
-</div>
-<div class="flex items-center gap-2">
-<button class="flex size-10 items-center justify-center rounded-lg text-[#A0A0A0] hover:bg-white/10 hover:text-[#EAEAEA]">
-<span class="material-symbols-outlined">add_comment</span>
-</button>
-<button class="flex size-10 items-center justify-center rounded-lg bg-white/10 text-[#EAEAEA]">
-<span class="material-symbols-outlined">top_panel_close</span>
-</button>
-</div>
-</header>
-<!-- Chat Area -->
-<div class="flex flex-1 flex-col">
-<div class="flex-1 overflow-y-auto p-6">
-<div class="flex w-full max-w-4xl flex-col gap-6 self-center">
-<!-- Timestamp -->
-<div class="flex items-center justify-center gap-2">
-<hr class="w-full border-t border-white/10"/>
-<p class="text-[#A0A0A0] text-xs font-medium uppercase tracking-wider whitespace-nowrap">Today</p>
-<hr class="w-full border-t border-white/10"/>
+    <!-- HEADER -->
+    <header class="flex h-[72px] items-center justify-between border-b border-white/10 bg-[#1A1A1A]/50 px-6 backdrop-blur-sm">
+      <p class="text-[#A0A0A0] text-sm font-normal leading-normal">Lead UX Architect & AI Ethicist</p>
+      <div class="flex gap-2">
+        <button class="flex items-center justify-center rounded-lg text-[#A0A0A0] hover:bg-white/10 hover:text-[#EAEAEA]">
+          <span class="material-symbols-outlined">add_comment</span>
+        </button>
+        <button class="flex items-center justify-center rounded-lg bg-white/10 text-[#EAEAEA]">
+          <span class="material-symbols-outlined">top_panel_close</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- CHAT AREA -->
+    <div class="flex flex-1 flex-col overflow-hidden">
+      <div id="chatScrollArea" class="flex-1 overflow-y-auto p-6 min-h-0">
+        <div id="chatContainer" class="flex flex-col gap-4 max-w-4xl mx-auto">
+          <!-- Placeholder message -->
+          <div class="flex items-start gap-3">
+            <div class="bg-[#2C2C2E] text-[#EAEAEA] rounded-xl rounded-bl-none px-4 py-3 max-w-[420px]">
+              Hi! I'm your AI portfolio assistant. Ask me about skills, projects, or case studies.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INPUT -->
+      <div class="flex-shrink-0 p-4 bg-gradient-to-t from-[#121212] to-transparent">
+        <div class="relative max-w-4xl mx-auto">
+          <textarea id="chatInput" rows="1" placeholder="Ask about skills, projects, or case studies..."
+            style="max-height:120px"
+            class="w-full resize-none rounded-xl border border-white/10 bg-[#2C2C2E] p-4 pr-14 text-base text-[#EAEAEA] placeholder-[#A0A0A0] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"></textarea>
+
+          <button id="sendButton" type="button"
+            class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-lg bg-gradient-to-r from-[#007BFF] to-[#9B59B6] text-white hover:opacity-90">
+            <span class="material-symbols-outlined text-xl">send</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="flex w-[360px] flex-col border-l border-white/10 bg-[#1A1A1A]">
+    <div class="flex items-center border-b border-white/10 p-2">
+      <button class="flex flex-1 items-center justify-center gap-2 rounded-md py-2.5 text-sm font-semibold text-[#A0A0A0] hover:text-[#EAEAEA]">
+        <span class="material-symbols-outlined text-xl">star_rate</span> Skills
+      </button>
+      <button class="flex flex-1 items-center justify-center gap-2 rounded-md bg-white/10 py-2.5 text-sm font-semibold text-[#EAEAEA]">
+        <span class="material-symbols-outlined text-xl">lightbulb</span> Top Projects
+      </button>
+      <button class="flex flex-1 items-center justify-center gap-2 rounded-md py-2.5 text-sm font-semibold text-[#A0A0A0] hover:text-[#EAEAEA]">
+        <span class="material-symbols-outlined text-xl">description</span> Case Studies
+      </button>
+    </div>
+  </aside>
 </div>
 
-<!-- AI Welcome Message -->
-<div class="flex items-end gap-3">
-<div class="flex flex-1 flex-col gap-2 items-start">
-<div class="flex max-w-[420px] flex-col gap-3">
-<p class="text-base font-normal leading-normal rounded-xl rounded-bl-none px-4 py-3 bg-[#2C2C2E] text-[#EAEAEA]">
-Hi! I'm your AI portfolio assistant. Ask me about skills, projects, or case studies.
-</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Input Field - Fixed at bottom -->
-<div class="flex shrink-0 justify-center bg-gradient-to-t from-[#121212] to-transparent pt-4 pb-6 px-6">
-<div class="relative w-full max-w-4xl">
-<textarea class="w-full resize-none rounded-xl border border-white/10 bg-[#2C2C2E] p-4 pr-14 text-base text-[#EAEAEA] placeholder-[#A0A0A0] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50" placeholder="Ask about skills, projects, or case studies..." rows="1"></textarea>
-<button class="absolute right-3 top-1/2 -translate-y-1/2 flex size-9 items-center justify-center rounded-lg bg-gradient-to-r from-[#007BFF] to-[#9B59B6] text-white hover:opacity-90">
-<span class="material-symbols-outlined text-xl">send</span>
-</button>
-</div>
-</div>
-</div>
-</main>
-<!-- Right Side Panel -->
-<aside class="flex w-[360px] shrink-0 flex-col border-l border-white/10 bg-[#1A1A1A]">
-<!-- Panel Navigation -->
-<div class="flex shrink-0 items-center border-b border-white/10 p-2">
-<button class="flex flex-1 items-center justify-center gap-2 rounded-md py-2.5 text-sm font-semibold text-[#A0A0A0] hover:text-[#EAEAEA]">
-<span class="material-symbols-outlined text-xl">star_rate</span>
-            Skills
-          </button>
-<button class="flex flex-1 items-center justify-center gap-2 rounded-md bg-white/10 py-2.5 text-sm font-semibold text-[#EAEAEA]">
-<span class="material-symbols-outlined text-xl">lightbulb</span>
-            Top Projects
-          </button>
-<button class="flex flex-1 items-center justify-center gap-2 rounded-md py-2.5 text-sm font-semibold text-[#A0A0A0] hover:text-[#EAEAEA]">
-<span class="material-symbols-outlined text-xl">description</span>
-            Case Studies
-          </button>
-</div>
-<!-- Panel Content -->
-<div class="flex-1 overflow-y-auto p-4">
-<div class="flex flex-col gap-4">
-<!-- Project Card 1 -->
-<div class="flex flex-col gap-3 rounded-xl border border-white/10 bg-[#2C2C2E] p-4">
-<div class="h-40 w-full rounded-lg bg-cover bg-center" data-alt="Abstract image for Project Cygnus" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDfX2JId8sRxHtGCm0kGnc8lBQ0yxM32tK4WyPOLznGUVNhC6hrJG3BVlidZ4bWoFmWVAcGoBJoBnQSGtH48N4mL-uPqFx8a31MxXuFkLEXSEC3F70hWh9QnkWycGPlpzcMlKf3JhFxmB7H80UsLhIfFv6-CkS7deZvrtGUF3262SoyiWl2TRWw7LLVydT0I5c5FwmFtgyM2SGy5_t5WsYoibxfHiQqInDc_cCXliylh5od25vH9blOpORd7vHpXY-NyAREzO2JI9I')"></div>
-<div class="flex flex-col gap-1">
-<h3 class="text-base font-semibold text-[#EAEAEA]">Project Cygnus</h3>
-<p class="text-sm text-[#A0A0A0] leading-relaxed">AI-driven healthcare platform to streamline patient data analysis and reduce diagnostic errors.</p>
-</div>
-<a class="text-sm font-semibold text-blue-400 hover:text-blue-300" href="#">See More →</a>
-</div>
-<!-- Project Card 2 -->
-<div class="flex flex-col gap-3 rounded-xl border border-white/10 bg-[#2C2C2E] p-4">
-<div class="h-40 w-full rounded-lg bg-cover bg-center" data-alt="Abstract image for Ethi-Q" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCjXQnrBu7_xjICurbL9wKxB37y0kZp6UNrM4BuDAUFBU3huUwoovHuCJ7ENP0jiyQPZ1CoWYPP8GUfyWrTQQU0E1N9wv5MKVoKWxvYt9oGEx8g43M8j1qPRvD7Ejkg-MLHbfo_iEOAjE9W7Z0kWdnyu_YHnIRsoQZHJBHTbuxN41qm5bqUrrNC5PIGMlYuF_VkI8qSaow3_GTclwo4E_h2G4VP3qOlk_50ZEdnrTiV1tzipWG-h4ktN6CJvk8NQzJKoEoockeFodY')"></div>
-<div class="flex flex-col gap-1">
-<h3 class="text-base font-semibold text-[#EAEAEA]">Ethi-Q</h3>
-<p class="text-sm text-[#A0A0A0] leading-relaxed">A fairness toolkit and design framework for creating unbiased AI interviewers and hiring tools.</p>
-</div>
-<a class="text-sm font-semibold text-blue-400 hover:text-blue-300" href="#">See More →</a>
-</div>
-<!-- Project Card 3 -->
-<div class="flex flex-col gap-3 rounded-xl border border-white/10 bg-[#2C2C2E] p-4">
-<div class="h-40 w-full rounded-lg bg-cover bg-center" data-alt="Abstract image for a design system project" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCiP2HgMmpB4m-CAKONSeO1yQM6chad777F9SlDvvOKcnusOOSP0PT3Ct8_GguFt20ptNvFosi7cWZlcOWb4Z1BelyGUPRVJ72CH6ctvINH9_Uk4niC1EyjSYrKS3Yy2NAU1FXzTdzJ9MFffWMbOOfWqiGvCodOWjRo8oKKW2YWrLF-BrzK0DtYpSQV5IFYC2xMdjn0wxP8zcZ3vLFL72Eba0_1JyhnQvuHg-6lofpSatbRYd6W_2RNoJarGeHTNsHOm-P0gXBQKfA')"></div>
-<div class="flex flex-col gap-1">
-<h3 class="text-base font-semibold text-[#EAEAEA]">Nova Design System</h3>
-<p class="text-sm text-[#A0A0A0] leading-relaxed">Led the development of a comprehensive design system for a suite of enterprise SaaS products.</p>
-</div>
-<a class="text-sm font-semibold text-blue-400 hover:text-blue-300" href="#">See More →</a>
-</div>
-</div>
-</div>
-</aside>
-</div>
-</div>
 <script>
-// Check authentication on page load
-function checkAuth() {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        window.location.href = '/login.html';
-        return;
-    }
-    
-    // Verify token is still valid
-    fetch('/api/auth/verify', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('userId');
-            window.location.href = '/login.html';
-        }
-    })
-    .catch(error => {
-        console.error('Auth verification failed:', error);
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('userId');
-        window.location.href = '/login.html';
-    });
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const textarea = document.getElementById('chatInput');
+  const sendButton = document.getElementById('sendButton');
+  const chatContainer = document.getElementById('chatContainer');
+  const scrollArea = document.getElementById('chatScrollArea');
 
-// Chat functionality
-let chatMessages = [];
-
-function sendMessage() {
-    const textarea = document.querySelector('textarea');
-    const message = textarea.value.trim();
-    if (!message) return;
-    
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        alert('Please log in to chat');
-        return;
-    }
-    
-    // Add user message to UI
-    addMessage(message, 'user');
-    textarea.value = '';
-    
-    // Send to backend
-    fetch('/api/chat/message', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ message })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.response) {
-            addMessage(data.response, 'bot');
-        }
-    })
-    .catch(error => {
-        console.error('Error sending message:', error);
-        addMessage('Sorry, I encountered an error. Please try again.', 'bot');
-    });
-}
-
-function addMessage(text, sender) {
-    const chatContainer = document.querySelector('.flex-1.overflow-y-auto .flex.w-full.max-w-4xl.flex-col.gap-6.self-center');
-    if (!chatContainer) return;
-    
+  function addMessage(text,sender='user'){
     const messageDiv = document.createElement('div');
-    messageDiv.className = `flex items-end gap-3 ${sender === 'user' ? 'justify-end' : ''}`;
-    
-    const bubbleDiv = document.createElement('div');
-    bubbleDiv.className = `max-w-[420px] rounded-xl px-4 py-3 text-base ${
-        sender === 'user' 
-            ? 'bg-gradient-to-r from-[#007BFF] to-[#9B59B6] text-white rounded-br-none' 
-            : 'bg-[#2C2C2E] text-[#EAEAEA] rounded-bl-none'
-    }`;
-    bubbleDiv.textContent = text;
-    
-    messageDiv.appendChild(bubbleDiv);
+    messageDiv.className = `flex items-end gap-3 ${sender==='user'?'justify-end':''}`;
+    const bubble = document.createElement('div');
+    bubble.className = `max-w-[420px] rounded-xl px-4 py-3 text-base ${
+      sender==='user' ? 'bg-gradient-to-r from-[#007BFF] to-[#9B59B6] text-white rounded-br-none'
+                      : 'bg-[#2C2C2E] text-[#EAEAEA] rounded-bl-none'}`;
+    bubble.textContent = text;
+    messageDiv.appendChild(bubble);
     chatContainer.appendChild(messageDiv);
-    
-    // Scroll to bottom
-    const scrollContainer = document.querySelector('.flex-1.overflow-y-auto');
-    if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-    }
-}
+    scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' });
+  }
 
-// Load chat history
-function loadChatHistory() {
-    const token = localStorage.getItem('authToken');
-    if (!token) return;
-    
-    fetch('/api/chat/messages', {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.messages) {
-            data.messages.forEach(msg => {
-                addMessage(msg.message, 'user');
-                addMessage(msg.response, 'bot');
-            });
-        }
-    })
-    .catch(error => console.error('Error loading chat history:', error));
-}
+  function sendMessage(){
+    const msg = textarea.value.trim();
+    if(!msg) return;
+    addMessage(msg,'user');
+    textarea.value='';
+    setTimeout(()=>addMessage("AI Response: "+msg,'bot'),400);
+  }
 
-// Add event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    const textarea = document.querySelector('textarea');
-    const sendButton = document.querySelector('button[class*="bg-gradient-to-r"]');
-    
-    if (sendButton) {
-        sendButton.addEventListener('click', sendMessage);
-    }
-    
-    if (textarea) {
-        textarea.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-    }
-    
-    // Load chat history
-    loadChatHistory();
+  sendButton.addEventListener('click',sendMessage);
+  textarea.addEventListener('keypress', e=>{
+    if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); }
+  });
+
+  textarea.addEventListener('input',()=>{
+    textarea.style.height='auto';
+    textarea.style.height=textarea.scrollHeight+'px';
+  });
 });
-
-// Run auth check when page loads
-checkAuth();
 </script>
-</body></html>
+</body>
+</html>
+

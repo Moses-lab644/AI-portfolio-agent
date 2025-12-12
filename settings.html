@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AI Portfolio Agent</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+<body class="bg-[#111116] font-display text-gray-200">
+<div class="relative flex h-auto min-h-screen w-full flex-col">
+    <div class="layout-container flex h-full grow flex-col">
+        <!-- TopNavBar -->
+        <header class="border-b border-solid border-white/10 px-4 sm:px-6 lg:px-10">
+            <div class="mx-auto flex max-w-7xl items-center justify-between whitespace-nowrap py-4">
+                <div class="flex items-center gap-4 text-white">
+                    <div class="size-6 text-primary">
+                        <svg fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM10 8h4v8h-4z"></path>
+                            <path d="M12 14.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm0-9c.83 0 1.5.67 1.5 1.5S12.83 8.5 12 8.5s-1.5-.67-1.5-1.5S11.17 5.5 12 5.5z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-white text-lg font-bold">AetherAgent</h2>
+                </div>
+                <div class="flex flex-1 justify-end gap-3">
+                    <button onclick="logout()" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined text-base">logout</span>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+        <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
+            <div class="flex gap-8">
+                <!-- Sidebar -->
+                <div class="w-48 flex-shrink-0">
+                    <nav class="space-y-2">
+                        <a href="dashboard.html" class="block px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors">Dashboard</a>
+                        <a href="settings.html" class="block px-4 py-2 text-white bg-white/10 rounded-lg transition-colors font-medium">Settings</a>
+                    </nav>
+                </div>
+                <!-- Settings Content -->
+                <div class="flex-1">
+                    <div class="mb-8">
+                        <h1 class="text-white text-xl font-bold mb-2">Settings</h1>
+                        <p class="text-gray-400">Manage your account and preferences</p>
+                    </div>
+                    
+                    <!-- Account Settings -->
+                    <div class="rounded-xl bg-[#1C1C24] p-6 border border-white/10 mb-6">
+                        <h2 class="text-white text-lg font-bold mb-4">Account Settings</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-gray-300 text-sm font-medium mb-2">Email Address</label>
+                                <input type="email" id="emailInput" disabled class="w-full px-4 py-2 bg-[#0F0F13] border border-white/10 rounded-lg text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm font-medium mb-2">Full Name</label>
+                                <input type="text" id="nameInput" class="w-full px-4 py-2 bg-[#0F0F13] border border-white/10 rounded-lg text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <button onclick="saveSettings()" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">Save Changes</button>
+                        </div>
+                    </div>
+
+                    <!-- Password Settings -->
+                    <div class="rounded-xl bg-[#1C1C24] p-6 border border-white/10 mb-6">
+                        <h2 class="text-white text-lg font-bold mb-4">Password</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-gray-300 text-sm font-medium mb-2">Current Password</label>
+                                <input type="password" id="currentPassword" class="w-full px-4 py-2 bg-[#0F0F13] border border-white/10 rounded-lg text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm font-medium mb-2">New Password</label>
+                                <input type="password" id="newPassword" class="w-full px-4 py-2 bg-[#0F0F13] border border-white/10 rounded-lg text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm font-medium mb-2">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" class="w-full px-4 py-2 bg-[#0F0F13] border border-white/10 rounded-lg text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <button onclick="changePassword()" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">Change Password</button>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="rounded-xl bg-red-950/20 p-6 border border-red-500/20">
+                        <h2 class="text-red-400 text-lg font-bold mb-4">Danger Zone</h2>
+                        <p class="text-gray-300 text-sm mb-4">Once you delete your account, there is no going back. Please be certain.</p>
+                        <button onclick="deleteAccount()" class="px-6 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors">Delete Account</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+function logout() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    window.location.href = 'login.html';
+}
+
+function loadSettings() {
+    let token = localStorage.getItem('authToken');
+    if (!token) {
+        token = localStorage.getItem('token');
+    }
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    fetch('/api/user/profile', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('emailInput').value = data.email || '';
+        document.getElementById('nameInput').value = data.name || '';
+    })
+    .catch(error => console.error('Error loading settings:', error));
+}
+
+function saveSettings() {
+    const name = document.getElementById('nameInput').value.trim();
+    if (!name) {
+        alert('Please enter a name');
+        return;
+    }
+
+    let token = localStorage.getItem('authToken') || localStorage.getItem('token');
+    
+    fetch('/api/user/profile', {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success || data.message) {
+            alert('Settings saved successfully!');
+        } else {
+            alert(data.error || 'Failed to save settings');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving settings:', error);
+        alert('Network error. Please try again.');
+    });
+}
+
+function changePassword() {
+    alert('Password change functionality coming soon');
+}
+
+function deleteAccount() {
+    if (confirm('Are you sure you want to delete your account? This cannot be undone.')) {
+        alert('Account deletion functionality coming soon');
+    }
+}
+
+// Load settings on page load
+window.addEventListener('load', loadSettings);
+</script>
+</body>
+</html>

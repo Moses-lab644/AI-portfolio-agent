@@ -61,7 +61,7 @@
 <div class="flex w-full items-center justify-center bg-[#1C1C1E] px-4 py-12 sm:px-6 lg:px-8">
 <div class="flex w-full max-w-md flex-col items-center gap-8">
 <div class="flex w-full flex-col gap-3 text-center">
-<p class="text-[#EAEAEA] text-4xl font-black leading-tight tracking-[-0.033em]">Create Account</p>
+<p class="text-[#EAEAEA] text-2xl font-black leading-tight tracking-[-0.033em]">Create Account</p>
 <p class="text-[#888888] text-base font-normal leading-normal">Join thousands of professionals using AI Portfolio Agents.</p>
 </div>
 <form id="signupForm" class="w-full space-y-4">
@@ -244,10 +244,14 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         const data = await response.json();
         
         if (response.ok) {
-            showSuccess('Account created successfully! Redirecting to login...');
+            showSuccess('Account created successfully! Redirecting to dashboard...');
+            // Store the token and redirect to dashboard (like OAuth callback does)
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('userId', data.userId);
+            localStorage.setItem('userName', data.name);
             setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 2000);
+                window.location.href = 'dashboard.html';
+            }, 1000);
         } else {
             showError(data.error || 'Failed to create account. Please try again.');
         }

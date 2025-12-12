@@ -45,20 +45,12 @@
 <div class="layout-container flex h-full grow flex-col items-center justify-center w-full max-w-2xl mx-auto py-12">
 <!-- Progress Bar -->
 <div class="w-full px-4 mb-12">
-<div class="flex items-center justify-between">
-<div class="flex flex-col items-center text-center relative">
-<div class="flex items-center justify-center size-8 rounded-full bg-primary text-white font-bold z-10">1</div>
-<p class="text-white text-sm font-medium mt-2">Connect</p>
+<div class="flex items-center justify-center">
+<div class="flex flex-col items-center text-center">
+<div class="flex items-center justify-center size-12 rounded-full bg-primary text-white font-bold z-10">
+<span class="material-symbols-outlined" id="progressIcon">lock</span>
 </div>
-<div class="flex-1 h-0.5 bg-[#282e39] mx-4"></div>
-<div class="flex flex-col items-center text-center relative">
-<div class="flex items-center justify-center size-8 rounded-full bg-[#282e39] text-[#9ca6ba] font-bold z-10">2</div>
-<p class="text-[#9ca6ba] text-sm font-medium mt-2">Syncing</p>
-</div>
-<div class="flex-1 h-0.5 bg-[#282e39] mx-4"></div>
-<div class="flex flex-col items-center text-center relative">
-<div class="flex items-center justify-center size-8 rounded-full bg-[#282e39] text-[#9ca6ba] font-bold z-10">3</div>
-<p class="text-[#9ca6ba] text-sm font-medium mt-2">Create Persona</p>
+<p class="text-white text-sm font-medium mt-3" id="progressText">Connect 2+ Accounts</p>
 </div>
 </div>
 </div>
@@ -68,7 +60,7 @@
 <!-- Page Heading -->
 <div class="flex flex-wrap justify-between gap-3 mb-8">
 <div class="flex flex-col gap-2">
-<p class="text-white text-3xl font-black leading-tight tracking-tight">Connect Your Digital Footprint</p>
+<p class="text-white text-xl font-black leading-tight tracking-tight">Connect Your Digital Footprint</p>
 <p class="text-[#9ca6ba] text-base font-normal leading-normal">Link your professional accounts to build a comprehensive profile for your AI agent.</p>
 </div>
 </div>
@@ -153,11 +145,11 @@ Connect Medium
 </div>
 <!-- Card Footer -->
 <div class="bg-black/20 border-t border-white/10 p-6 flex justify-between items-center">
-<button class="text-[#9ca6ba] text-sm font-medium hover:text-white transition-colors duration-200" onclick="window.location.href='dashboard.html'">Skip for now</button>
-<button class="flex items-center justify-center rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold leading-normal shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all duration-200" onclick="window.location.href='dashboard.html'">
-<span class="truncate">Next: Sync Data</span>
-<span class="material-symbols-outlined ml-2">arrow_forward</span>
-</button>
+    <button id="skipBtn" class="text-[#9ca6ba] text-sm font-medium hover:text-white transition-colors duration-200">Skip for now</button>
+    <button id="dashboardBtn" class="flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold leading-normal shadow-lg shadow-primary/20 transition-all duration-200 opacity-50 pointer-events-none" disabled>
+        <span class="truncate">Continue to Dashboard</span>
+        <span class="material-symbols-outlined ml-2">arrow_forward</span>
+    </button>
 </div>
 </div>
 </div>
@@ -214,6 +206,36 @@ function handlePlatformConnection(platform, formData) {
                 <span class="material-symbols-outlined">check_circle</span>
                 <span class="text-sm font-medium">Connected</span>
             </div>`;
+            // Persist connection state and update button
+            try {
+                const stored = JSON.parse(localStorage.getItem('connectedPlatforms') || '[]');
+                if (!stored.includes(platform)) {
+                    stored.push(platform);
+                    localStorage.setItem('connectedPlatforms', JSON.stringify(stored));
+                }
+            } catch (e) {
+                localStorage.setItem('connectedPlatforms', JSON.stringify([platform]));
+            }
+            // Store notification
+            try {
+                const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+                notifications.unshift({
+                    id: Date.now(),
+                    message: `Successfully connected ${platform}!`,
+                    type: 'success',
+                    timestamp: new Date().toISOString(),
+                    read: false
+                });
+                localStorage.setItem('notifications', JSON.stringify(notifications.slice(0, 10)));
+            } catch (e) {
+                console.error('Failed to store notification:', e);
+            }
+            // Show alert
+            alert(`✓ Successfully connected ${platform}!`);
+            // Update button state after connection
+            if (typeof updateButtonState === 'function') {
+                updateButtonState();
+            }
         } else {
             alert(`Failed to connect ${platform}: ${data.message}`);
         }
@@ -261,7 +283,89 @@ document.addEventListener('DOMContentLoaded', function() {
             username: formData.get('username')
         });
     });
+
+    // Initialize connected platforms from localStorage and update UI
+    const existing = JSON.parse(localStorage.getItem('connectedPlatforms') || '[]');
+    if (Array.isArray(existing) && existing.length > 0) {
+        existing.forEach(p => markConnectedUI(p));
+    }
+
+    // Attempt to fetch connected platforms from server (authoritative)
+    (async function checkServerConnectedPlatforms() {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            return;
+        }
+        try {
+            const res = await fetch('/api/portfolio', { method: 'GET', headers: { 'Authorization': `Bearer ${token}` } });
+            if (!res.ok) { return; }
+            const data = await res.json();
+            let platforms = [];
+            if (Array.isArray(data)) platforms = data;
+            else if (data && Array.isArray(data.connected)) platforms = data.connected;
+            if (platforms.length > 0) {
+                // Persist server-known connections locally for quick access
+                try { localStorage.setItem('connectedPlatforms', JSON.stringify(platforms)); } catch (e) {}
+                platforms.forEach(p => markConnectedUI(p));
+            }
+        } catch (e) {
+            console.warn('Could not fetch connected platforms from server:', e);
+        }
+    })();
+
+    // Update button state based on connected platform count
+    function updateButtonState() {
+        const existing = JSON.parse(localStorage.getItem('connectedPlatforms') || '[]');
+        const count = Array.isArray(existing) ? existing.length : 0;
+        const dashboardBtn = document.getElementById('dashboardBtn');
+        const progressIcon = document.getElementById('progressIcon');
+        const progressText = document.getElementById('progressText');
+        
+        if (count >= 2) {
+            dashboardBtn.removeAttribute('disabled');
+            dashboardBtn.classList.remove('opacity-50', 'pointer-events-none');
+            dashboardBtn.classList.add('hover:bg-primary/90');
+            progressIcon.textContent = 'check';
+            progressText.textContent = 'All Set!';
+        } else {
+            dashboardBtn.setAttribute('disabled', 'disabled');
+            dashboardBtn.classList.add('opacity-50', 'pointer-events-none');
+            dashboardBtn.classList.remove('hover:bg-primary/90');
+            progressIcon.textContent = 'lock';
+            progressText.textContent = `Connect ${2 - count} more account${2 - count === 1 ? '' : 's'}`;
+        }
+    }
+
+    // Bind dashboard button - requires 2+ accounts
+    const dashboardBtn = document.getElementById('dashboardBtn');
+    dashboardBtn.addEventListener('click', () => {
+        const existing = JSON.parse(localStorage.getItem('connectedPlatforms') || '[]');
+        if (Array.isArray(existing) && existing.length >= 2) {
+            window.location.href = '/dashboard.html';
+        }
+    });
+
+    // Bind skip button
+    const skipBtn = document.getElementById('skipBtn');
+    skipBtn.addEventListener('click', () => {
+        try { localStorage.setItem('onboardingSkipped', 'true'); } catch (e) { /* ignore */ }
+        window.location.href = '/dashboard.html';
+    });
+
+    // Initialize button state
+    updateButtonState();
 });
+
+// Mark a platform's form as connected (used on success and on load)
+function markConnectedUI(platform) {
+    const form = document.getElementById(`${platform}Form`);
+    if (form) {
+        form.innerHTML = `<div class="flex items-center gap-2 text-[#03DAC6] justify-center py-2">
+                <span class="material-symbols-outlined">check_circle</span>
+                <span class="text-sm font-medium">Connected</span>
+            </div>`;
+    }
+}
 
 // Run auth check when page loads
 checkAuth();

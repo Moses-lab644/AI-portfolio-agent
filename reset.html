@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reset Password</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>body{font-family:Inter,Arial;margin:40px;background:#0f1724;color:#e6eef8} .card{max-width:520px;margin:0 auto;padding:20px;background:#0b1220;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}</style>
+</head>
+<body>
+  <div class="card">
+    <h2>Reset Password</h2>
+    <p>Enter a new password for your account.</p>
+    <div id="msg" style="color:#cfe3ff;margin-bottom:12px"></div>
+    <form id="resetForm">
+      <input id="password" type="password" placeholder="New password" style="width:100%;padding:10px;border-radius:6px;border:1px solid #2b3440;background:transparent;color:#e6eef8;margin-bottom:10px" required />
+      <input id="confirm" type="password" placeholder="Confirm password" style="width:100%;padding:10px;border-radius:6px;border:1px solid #2b3440;background:transparent;color:#e6eef8;margin-bottom:10px" required />
+      <button style="padding:10px 14px;border-radius:8px;background:#7c5cff;border:none;color:white;cursor:pointer">Reset password</button>
+    </form>
+    <p style="margin-top:18px;color:#9aa4b2">Back to <a href="login.html">Login</a></p>
+  </div>
+<script>
+function getQueryParam(name){
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
+const token = getQueryParam('token');
+if(!token){ document.getElementById('msg').style.color='#ff6b6b'; document.getElementById('msg').textContent='Missing reset token'; }
+
+document.getElementById('resetForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const p = document.getElementById('password').value;
+  const c = document.getElementById('confirm').value;
+  const msg = document.getElementById('msg'); msg.textContent='';
+  if(p.length<6){ msg.style.color='#ff6b6b'; msg.textContent='Password must be at least 6 chars'; return; }
+  if(p!==c){ msg.style.color='#ff6b6b'; msg.textContent='Passwords do not match'; return; }
+  try{
+    const res = await fetch('/api/auth/reset/'+encodeURIComponent(token), {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:p})});
+    const data = await res.json();
+    if(res.ok){ msg.style.color='#22c55e'; msg.textContent = data.message || 'Password reset successful'; setTimeout(()=>{ window.location.href='login.html'; },1500); }
+    else { msg.style.color='#ff6b6b'; msg.textContent = data.error || 'Failed to reset password'; }
+  }catch(err){ msg.style.color='#ff6b6b'; msg.textContent='Network error'; }
+});
+</script>
+</body>
+</html>

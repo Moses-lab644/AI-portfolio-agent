@@ -1,124 +1,48 @@
-# AI-Powered Portfolio Agent
+AI-Powered Portfolio Agent — Demo
 
-A modern web application that allows professionals to create AI-powered portfolio agents by connecting their digital footprint from various platforms.
+Overview
 
-## Features
+This is a local, static demo of a premium SaaS-style UI for an "AI-Powered Portfolio Agent". The interface lets professionals connect portfolio sources (GitHub, LinkedIn, Dribbble, Medium, website) and generate an AI agent clients can chat with.
 
-- **User Authentication**: JWT-based auth with Google/GitHub OAuth
-- **Social Media Integration**: Connect GitHub, LinkedIn, Dribbble, Medium
-- **AI Chat Interface**: Interactive portfolio agent for visitors
-- **Responsive Design**: Works on all devices
-- **Profile Management**: Customizable user profiles
-- **Real-time Chat**: Persistent chat messages
+Files
 
-## Tech Stack
+- `index.html` — Single-file demo containing HTML, embedded CSS and JavaScript to simulate the onboarding and chat preview.
 
-- **Frontend**: HTML, CSS (Tailwind), JavaScript
-- **Backend**: Node.js, Express.js
-- **Database**: PostgreSQL
-- **Authentication**: JWT, Passport.js
-- **File Upload**: Multer
+How to run
 
-## Setup Instructions
+1. Open `c:\Users\HP\Desktop\New project\index.html` in your browser (double-click or use "Open with → Browser").
 
-### Prerequisites
-- Node.js (v14+)
-- PostgreSQL database
-- Google/GitHub OAuth credentials (optional)
+If you want to run the backend server included in this repository (optional):
 
-### Installation
+1. Ensure you have Node.js installed (v16+ recommended).
+2. From the project root, install dependencies:
 
-1. **Clone and install dependencies**:
-```bash
+```powershell
 npm install
 ```
 
-2. **Database Setup**:
-   - Create a PostgreSQL database
-   - Copy `.env.example` to `.env`
-   - Update `DATABASE_URL` with your PostgreSQL connection string
+3. Start the server:
 
-3. **Environment Variables**:
-```env
-DATABASE_URL=postgresql://username:password@localhost:5432/portfolio_db
-JWT_SECRET=your-super-secret-jwt-key
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-GITHUB_CLIENT_ID=your-github-client-id
-GITHUB_CLIENT_SECRET=your-github-client-secret
-PORT=3000
-NODE_ENV=development
-SESSION_SECRET=your-session-secret
+```powershell
+node server.js
 ```
 
-4. **Run the application**:
-```bash
-npm start
-```
+Notes:
+- If you see "Cannot find module 'pg'", run `npm install pg` (the project normally lists `pg` in `package.json`).
+- For local dev the app will now start even if `pg` is not installed — database initialization will be skipped and the server will run with a lightweight stub for the DB. Install `pg` and set `DATABASE_URL` in `.env` to enable persistent Postgres storage.
 
-Visit `http://localhost:3000` to access the application.
+Notes & next steps
 
-## Production Deployment
+- This is a static demo. To make it production-ready you can:
+  - Implement OAuth flows for connectors (GitHub, LinkedIn, etc.) on a backend.
+  - Add secure indexing pipeline to ingest private repositories and websites.
+  - Add server-side agent generation, model selection, rate-limiting and request auditing.
+  - Wire analytics and permissions controls.
 
-### Recommended Hosting Platforms:
-- **Railway**: Easy PostgreSQL + Node.js deployment
-- **Heroku**: With Heroku Postgres add-on
-- **Vercel**: With Supabase PostgreSQL
-- **AWS**: EC2 + RDS PostgreSQL
+Customization
 
-### Environment Setup:
-1. Set `NODE_ENV=production`
-2. Use production PostgreSQL database
-3. Configure OAuth redirect URLs for production domain
-4. Set secure JWT and session secrets
+- Edit `index.html` to change brand colors, default persona, and sample chat content.
 
-## Database Migration
+License
 
-The app automatically creates tables on startup. For production:
-1. Run database migrations manually
-2. Set up proper database backups
-3. Configure connection pooling
-
-## API Endpoints
-
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/auth/verify` - Token verification
-- `POST /api/portfolio/connect/:platform` - Connect social platform
-- `GET /api/portfolio/connections` - Get user connections
-- `POST /api/chat/message` - Send chat message
-- `GET /api/chat/messages` - Get chat history
-- `GET /api/user/profile` - Get user profile
-- `PUT /api/user/profile` - Update user profile
-
-## File Structure
-
-```
-├── database/
-│   └── init.js              # PostgreSQL database setup
-├── routes/
-│   ├── auth.js              # Authentication routes
-│   ├── portfolio.js         # Social platform connections
-│   ├── chat.js              # Chat functionality
-│   └── user.js              # User profile management
-├── middleware/
-│   └── auth.js              # JWT authentication middleware
-├── uploads/                 # File upload directory
-├── *.html                   # Frontend pages
-├── server.js                # Express server
-├── package.json             # Dependencies
-└── .env.example             # Environment template
-```
-
-## Security Features
-
-- JWT token authentication
-- Password hashing with bcrypt
-- Input validation and sanitization
-- CORS protection
-- SQL injection prevention with parameterized queries
-- File upload restrictions
-
-## License
-
-This project is provided as-is for educational and prototyping purposes.
+This demo is provided as-is for design and prototyping purposes.
