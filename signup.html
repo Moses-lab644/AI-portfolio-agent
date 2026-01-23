@@ -249,6 +249,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
             localStorage.setItem('token', data.token);
             localStorage.setItem('userId', data.userId);
             localStorage.setItem('userName', data.name);
+            localStorage.setItem('userEmail', email);
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
             }, 1000);

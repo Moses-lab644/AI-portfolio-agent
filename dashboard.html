@@ -5,6 +5,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>AI Portfolio Agent Dashboard</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 <script>
@@ -54,7 +55,10 @@
 </svg>
 </div>
 <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]" id="brandName">Loading...</h2>
-<div class="flex items-center gap-2 ml-4">
+<div class="flex items-center gap-4 ml-4">
+<div class="flex items-center gap-2">
+<span class="text-gray-400 text-sm" id="headerUsername">Loading...</span>
+</div>
 <div class="relative">
 <button onclick="toggleProfileDropdown()" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
 <span class="material-symbols-outlined text-base">person</span>
@@ -134,13 +138,39 @@ Logout
 </div>
 <!-- Right Column -->
 <div class="flex flex-col gap-6">
+<!-- User Profile Card -->
+<div class="flex flex-col gap-4 rounded-xl bg-[#1C1C24] p-6 border border-white/10">
+<div class="flex flex-col gap-4">
+<p class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Profile Information</p>
+<div class="flex flex-col gap-3">
+<div class="flex flex-col gap-1">
+<p class="text-[#8A8A93] text-xs font-medium uppercase tracking-wider">Name</p>
+<p id="profileNameDisplay" class="text-white text-base font-medium">Loading...</p>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-[#8A8A93] text-xs font-medium uppercase tracking-wider">Email</p>
+<p id="profileEmailDisplay" class="text-white text-base font-medium break-all">Loading...</p>
+</div>
+</div>
+</div>
+<button onclick="openProfileModal()" class="mt-2 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white/10 text-white text-sm font-medium leading-normal hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-base mr-2">edit</span>
+<span class="truncate">Edit Profile</span>
+</button>
+</div>
 <!-- Profile Strength -->
 <div class="flex flex-col gap-4 rounded-xl bg-[#1C1C24] p-6 border border-white/10">
-<div class="flex gap-6 justify-between items-center">
-<p class="text-white text-base font-medium leading-normal">Profile Strength</p>
-<p class="text-white text-2xl font-bold">85%</p>
+<div class="flex flex-col sm:flex-row gap-6 justify-between items-start sm:items-center">
+<div class="flex-1">
+<p class="text-white text-base font-medium leading-normal mb-2">Profile Strength</p>
+<p class="text-white text-2xl font-bold mb-3">85%</p>
+<div id="apiStatus" class="text-xs text-[#8A8A93] mt-1"></div>
 </div>
-<div class="rounded-full bg-[#3b4354] h-2"><div class="h-2 rounded-full bg-primary" style="width: 85%;"></div></div>
+<div class="w-32 h-32 flex-shrink-0">
+<canvas id="profileStrengthChart"></canvas>
+</div>
+</div>
+<div class="rounded-full bg-[#3b4354] h-2"><div class="h-2 rounded-full bg-primary transition-all duration-500" style="width: 85%;"></div></div>
 <p class="text-[#8A8A93] text-sm font-normal leading-normal">Add your recent publications to complete your profile.</p>
 <button onclick="window.location.href='/onboarding.html'" class="mt-2 flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-medium leading-normal hover:bg-primary/90 transition-colors">
 <span class="truncate">Improve Profile</span>
@@ -338,9 +368,46 @@ function loadUserData() {
     }
     if (!token) return;
     
+    // Load from localStorage first for immediate display
+    const localName = localStorage.getItem('userName');
+    const localEmail = localStorage.getItem('userEmail');
+    
+    if (localName) {
+        // Update header username immediately
+        const headerUsername = document.getElementById('headerUsername');
+        if (headerUsername) {
+            headerUsername.textContent = localName;
+        }
+        
+        // Update welcome text immediately
+        const welcomeText = document.getElementById('welcomeText');
+        if (welcomeText) {
+            welcomeText.textContent = `Welcome Back, ${localName}`;
+        }
+        
+        // Update brand name immediately
+        const brandName = document.getElementById('brandName');
+        if (brandName) {
+            brandName.textContent = localName;
+        }
+        
+        // Update profile display section
+        const profileNameDisplay = document.getElementById('profileNameDisplay');
+        if (profileNameDisplay) {
+            profileNameDisplay.textContent = localName;
+        }
+    }
+    
+    if (localEmail) {
+        const profileEmailDisplay = document.getElementById('profileEmailDisplay');
+        if (profileEmailDisplay) {
+            profileEmailDisplay.textContent = localEmail;
+        }
+    }
+    
     const userId = localStorage.getItem('userId');
     
-    // Fetch user profile from API
+    // Fetch user profile from API to refresh data
     fetch('/api/user/profile', {
         headers: {
             'Authorization': `Bearer ${token}`
@@ -348,32 +415,68 @@ function loadUserData() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.name || data.email) {
-            // Update welcome message with actual user name
+        if (data) {
+            // Update all fields with fresh data from API
+            const headerUsername = document.getElementById('headerUsername');
+            if (headerUsername && data.name) {
+                headerUsername.textContent = data.name;
+            }
+            
             const welcomeText = document.getElementById('welcomeText');
             if (welcomeText) {
                 const displayName = data.name || 'User';
                 welcomeText.textContent = `Welcome Back, ${displayName}`;
             }
-            // Update brand name with user name
+            
             const brandName = document.getElementById('brandName');
             if (brandName && data.name) {
                 brandName.textContent = data.name;
             }
-            console.log('User profile loaded:', data.email);
+            
+            // Store user data in localStorage for quick access
+            if (data.name) {
+                localStorage.setItem('userName', data.name);
+            }
+            if (data.email) {
+                localStorage.setItem('userEmail', data.email);
+            }
+            
+            // Update profile section if it exists
+            const profileNameDisplay = document.getElementById('profileNameDisplay');
+            if (profileNameDisplay && data.name) {
+                profileNameDisplay.textContent = data.name;
+            }
+            
+            const profileEmailDisplay = document.getElementById('profileEmailDisplay');
+            if (profileEmailDisplay && data.email) {
+                profileEmailDisplay.textContent = data.email;
+            }
+            
+            console.log('User profile loaded:', { name: data.name, email: data.email });
         }
     })
     .catch(error => {
-        // Fallback: use name from localStorage if API fails
+        // Fallback: use name and email from localStorage if API fails
         const localName = localStorage.getItem('userName');
-        if (localName) {
+        const localEmail = localStorage.getItem('userEmail');
+        if (localName || localEmail) {
             const welcomeText = document.getElementById('welcomeText');
-            if (welcomeText) {
+            if (welcomeText && localName) {
                 welcomeText.textContent = `Welcome Back, ${localName}`;
             }
             const brandName = document.getElementById('brandName');
-            if (brandName) {
+            if (brandName && localName) {
                 brandName.textContent = localName;
+            }
+            
+            const profileNameDisplay = document.getElementById('profileNameDisplay');
+            if (profileNameDisplay && localName) {
+                profileNameDisplay.textContent = localName;
+            }
+            
+            const profileEmailDisplay = document.getElementById('profileEmailDisplay');
+            if (profileEmailDisplay && localEmail) {
+                profileEmailDisplay.textContent = localEmail;
             }
         }
         console.error('Error loading user data:', error);
@@ -400,6 +503,100 @@ function loadUserData() {
 function updateConnectedSources(connections) {
     // This would update the connected sources section with actual data
     console.log('Connected platforms:', connections);
+}
+
+// Initialize responsive profile strength chart
+function initProfileStrengthChart() {
+    const chartCanvas = document.getElementById('profileStrengthChart');
+    if (!chartCanvas) {
+        console.warn('Chart canvas element not found');
+        return;
+    }
+    
+    // Check if Chart.js is loaded
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js library not loaded');
+        return;
+    }
+    
+    try {
+        const ctx = chartCanvas.getContext('2d');
+        const profileStrength = 85;
+        
+        // Destroy existing chart if it exists
+        if (window.profileStrengthChartInstance) {
+            window.profileStrengthChartInstance.destroy();
+        }
+        
+        window.profileStrengthChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [profileStrength, 100 - profileStrength],
+                    backgroundColor: ['#6A3FFF', '#3b4354'],
+                    borderColor: '#1C1C24',
+                    borderWidth: 2,
+                    circumference: 360,
+                    rotation: -90
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed + '%';
+                            }
+                        }
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error initializing chart:', error);
+        // Fallback: show simple progress indicator without chart
+        const chartCanvas = document.getElementById('profileStrengthChart');
+        if (chartCanvas) {
+            chartCanvas.parentElement.innerHTML = '<div class="text-center text-[#8A8A93]">Profile Strength: 85%</div>';
+        }
+    }
+}
+
+// Check API status and update indicator
+function checkAPIStatus() {
+    const token = localStorage.getItem('authToken');
+    if (!token) return;
+    
+    const statusEl = document.getElementById('apiStatus');
+    if (!statusEl) return;
+    
+    // Check server connectivity
+    fetch('/api/user/profile', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            statusEl.textContent = '✅ API Responding';
+            statusEl.className = 'text-xs text-green-400 mt-1';
+        } else {
+            statusEl.textContent = '⚠️ API Response Slow';
+            statusEl.className = 'text-xs text-yellow-400 mt-1';
+        }
+    })
+    .catch(error => {
+        console.warn('API check failed:', error);
+        statusEl.textContent = '⚠️ Using Fallback Mode';
+        statusEl.className = 'text-xs text-yellow-400 mt-1';
+    });
 }
 
 // Profile dropdown functions
@@ -675,7 +872,15 @@ function saveProfile() {
 }
 
 // Run auth check and load data when page loads
-checkAuth();
-loadUserData();
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    loadUserData();
+    
+    // Initialize chart with a small delay to ensure DOM is fully rendered
+    setTimeout(() => {
+        initProfileStrengthChart();
+        checkAPIStatus();
+    }, 100);
+});
 </script>
 </body></html>

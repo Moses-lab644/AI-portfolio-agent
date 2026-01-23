@@ -60,8 +60,14 @@ const createPostgresTables = async (pgPool) => {
     agent_name VARCHAR(255),
     agent_description TEXT,
     public_url VARCHAR(255),
+    bio TEXT,
+    skills JSONB,
+    years_experience INTEGER DEFAULT 0,
+    specialties JSONB,
+    role_title VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )`);
+
 
   // Projects table
   await pgPool.query(`CREATE TABLE IF NOT EXISTS projects (

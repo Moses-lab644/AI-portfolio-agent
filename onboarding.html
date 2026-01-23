@@ -60,12 +60,68 @@
 <!-- Page Heading -->
 <div class="flex flex-wrap justify-between gap-3 mb-8">
 <div class="flex flex-col gap-2">
-<p class="text-white text-xl font-black leading-tight tracking-tight">Connect Your Digital Footprint</p>
-<p class="text-[#9ca6ba] text-base font-normal leading-normal">Link your professional accounts to build a comprehensive profile for your AI agent.</p>
+<p class="text-white text-xl font-black leading-tight tracking-tight">Build Your AI Portfolio Agent</p>
+<p class="text-[#9ca6ba] text-base font-normal leading-normal">Share your details so your AI agent can represent you accurately to visitors.</p>
 </div>
 </div>
-<!-- Connection Forms Container -->
-<div class="flex flex-col gap-4">
+
+<!-- Tabs Navigation -->
+<div class="flex gap-2 mb-6 border-b border-white/10">
+<button class="tab-btn active px-4 py-2 text-white font-medium border-b-2 border-primary transition-colors" data-tab="details">
+<span class="material-symbols-outlined text-sm mr-2" style="vertical-align: middle;">person</span>
+Your Details
+</button>
+<button class="tab-btn px-4 py-2 text-[#9ca6ba] font-medium border-b-2 border-transparent hover:text-white transition-colors" data-tab="connections">
+<span class="material-symbols-outlined text-sm mr-2" style="vertical-align: middle;">link</span>
+Connections
+</button>
+</div>
+
+<!-- Tab Content -->
+<div class="w-full">
+<!-- Details Tab -->
+<div id="details-tab" class="tab-content space-y-4">
+<!-- Professional Bio -->
+<div class="bg-[#101622]/50 border border-white/10 rounded-lg p-4">
+<label class="block text-white text-sm font-medium mb-2">Professional Bio</label>
+<textarea id="professionalBio" placeholder="Brief summary of who you are and what you do" class="w-full px-3 py-2 bg-[#282e39] border border-white/10 rounded-lg text-white placeholder-[#9ca6ba] focus:outline-none focus:border-primary resize-none h-20"></textarea>
+<p class="text-[#9ca6ba] text-xs mt-1">This helps your AI agent introduce you to visitors</p>
+</div>
+
+<!-- Skills -->
+<div class="bg-[#101622]/50 border border-white/10 rounded-lg p-4">
+<label class="block text-white text-sm font-medium mb-2">Key Skills (comma-separated)</label>
+<input type="text" id="skills" placeholder="e.g., JavaScript, React, Python, Machine Learning, UI Design" class="w-full px-3 py-2 bg-[#282e39] border border-white/10 rounded-lg text-white placeholder-[#9ca6ba] focus:outline-none focus:border-primary">
+<p class="text-[#9ca6ba] text-xs mt-1">What are you good at?</p>
+</div>
+
+<!-- Experience -->
+<div class="bg-[#101622]/50 border border-white/10 rounded-lg p-4">
+<label class="block text-white text-sm font-medium mb-2">Years of Experience</label>
+<input type="number" id="yearsExperience" min="0" max="70" placeholder="e.g., 5" class="w-full px-3 py-2 bg-[#282e39] border border-white/10 rounded-lg text-white placeholder-[#9ca6ba] focus:outline-none focus:border-primary">
+</div>
+
+<!-- Specialties -->
+<div class="bg-[#101622]/50 border border-white/10 rounded-lg p-4">
+<label class="block text-white text-sm font-medium mb-2">Specialties (comma-separated)</label>
+<input type="text" id="specialties" placeholder="e.g., Full-stack development, AI/ML, Cloud architecture" class="w-full px-3 py-2 bg-[#282e39] border border-white/10 rounded-lg text-white placeholder-[#9ca6ba] focus:outline-none focus:border-primary">
+<p class="text-[#9ca6ba] text-xs mt-1">What areas do you specialize in?</p>
+</div>
+
+<!-- Current Role -->
+<div class="bg-[#101622]/50 border border-white/10 rounded-lg p-4">
+<label class="block text-white text-sm font-medium mb-2">Current Role/Title</label>
+<input type="text" id="currentRole" placeholder="e.g., Senior Software Engineer, Product Designer" class="w-full px-3 py-2 bg-[#282e39] border border-white/10 rounded-lg text-white placeholder-[#9ca6ba] focus:outline-none focus:border-primary">
+</div>
+
+<!-- Save Details Button -->
+<button id="saveDetailsBtn" class="w-full h-9 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors duration-200">
+Save Your Details
+</button>
+</div>
+
+<!-- Connections Tab -->
+<div id="connections-tab" class="tab-content space-y-4 hidden">
 <!-- GitHub Form -->
 <div class="bg-[#101622]/50 border border-white/10 rounded-lg p-4">
 <div class="flex items-center gap-4 mb-4">
@@ -155,6 +211,66 @@ Connect Medium
 </div>
 </div>
 <script>
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const tabName = this.getAttribute('data-tab');
+        
+        // Update buttons
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active', 'text-white', 'border-primary');
+            b.classList.add('text-[#9ca6ba]', 'border-transparent');
+        });
+        this.classList.add('active', 'text-white', 'border-primary');
+        this.classList.remove('text-[#9ca6ba]', 'border-transparent');
+        
+        // Update content
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.add('hidden');
+        });
+        document.getElementById(tabName + '-tab').classList.remove('hidden');
+    });
+});
+
+// Save user details
+document.getElementById('saveDetailsBtn').addEventListener('click', async function() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Please log in first');
+        return;
+    }
+    
+    const details = {
+        professionalBio: document.getElementById('professionalBio').value,
+        skills: document.getElementById('skills').value.split(',').map(s => s.trim()).filter(s => s),
+        yearsExperience: parseInt(document.getElementById('yearsExperience').value) || 0,
+        specialties: document.getElementById('specialties').value.split(',').map(s => s.trim()).filter(s => s),
+        currentRole: document.getElementById('currentRole').value
+    };
+    
+    try {
+        const response = await fetch('/api/user/profile', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(details)
+        });
+        
+        if (response.ok) {
+            alert('✓ Your details have been saved!');
+            // Store in localStorage for quick access
+            localStorage.setItem('userDetails', JSON.stringify(details));
+        } else {
+            alert('Failed to save details');
+        }
+    } catch (error) {
+        console.error('Error saving details:', error);
+        alert('Error saving details');
+    }
+});
+
 // Check authentication on page load
 function checkAuth() {
     const token = localStorage.getItem('authToken');
@@ -189,6 +305,16 @@ function checkAuth() {
 function handlePlatformConnection(platform, formData) {
     const token = localStorage.getItem('authToken');
     
+    if (!token) {
+        alert('Authentication token not found. Please log in again.');
+        return;
+    }
+    
+    if (!formData.username && !formData.profileUrl) {
+        alert('Please provide required information');
+        return;
+    }
+    
     fetch(`/api/portfolio/connect/${platform}`, {
         method: 'POST',
         headers: {
@@ -197,7 +323,14 @@ function handlePlatformConnection(platform, formData) {
         },
         body: JSON.stringify(formData)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.error || `HTTP ${response.status}`);
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             // Show success message and update UI
@@ -237,12 +370,12 @@ function handlePlatformConnection(platform, formData) {
                 updateButtonState();
             }
         } else {
-            alert(`Failed to connect ${platform}: ${data.message}`);
+            alert(`Failed to connect ${platform}: ${data.error || 'Unknown error'}`);
         }
     })
     .catch(error => {
         console.error(`Error connecting ${platform}:`, error);
-        alert(`Error connecting ${platform}`);
+        alert(`Error connecting ${platform}: ${error.message}`);
     });
 }
 

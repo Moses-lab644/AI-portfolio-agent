@@ -51,14 +51,36 @@ router.get('/profile', async (req, res) => {
 // Update user profile
 router.put('/profile', async (req, res) => {
   const userId = req.user.userId;
-  const { name } = req.body;
-  
-  if (!name) {
-    return res.status(400).json({ error: 'Name is required' });
-  }
+  const { name, professionalBio, skills, yearsExperience, specialties, currentRole } = req.body;
   
   try {
-    await pool.query('UPDATE users SET name = $1 WHERE id = $2', [name, userId]);
+    // Update basic user info
+    if (name) {
+      await pool.query('UPDATE users SET name = $1 WHERE id = $2', [name, userId]);
+    }
+    
+    // Update user settings with professional details
+    const skillsJson = skills ? JSON.stringify(skills) : null;
+    const specialtiesJson = specialties ? JSON.stringify(specialties) : null;
+    
+    // Check if settings exist
+    const settingsCheck = await pool.query('SELECT id FROM user_settings WHERE user_id = $1', [userId]);
+    
+    if (settingsCheck.rows.length > 0) {
+      // Update existing settings
+      await pool.query(`
+        UPDATE user_settings 
+        SET bio = $1, skills = $2, years_experience = $3, specialties = $4, role_title = $5
+        WHERE user_id = $6
+      `, [professionalBio || null, skillsJson, yearsExperience || 0, specialtiesJson, currentRole || null, userId]);
+    } else {
+      // Create new settings
+      await pool.query(`
+        INSERT INTO user_settings (user_id, bio, skills, years_experience, specialties, role_title)
+        VALUES ($1, $2, $3, $4, $5, $6)
+      `, [userId, professionalBio || null, skillsJson, yearsExperience || 0, specialtiesJson, currentRole || null]);
+    }
+    
     res.json({ success: true, message: 'Profile updated successfully' });
   } catch (error) {
     console.error('Profile update error:', error);

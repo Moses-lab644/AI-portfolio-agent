@@ -108,36 +108,109 @@ document.addEventListener('DOMContentLoaded', () => {
   const chatContainer = document.getElementById('chatContainer');
   const scrollArea = document.getElementById('chatScrollArea');
 
-  function addMessage(text,sender='user'){
+  let isLoading = false;
+
+  function addMessage(text, sender = 'user') {
     const messageDiv = document.createElement('div');
-    messageDiv.className = `flex items-end gap-3 ${sender==='user'?'justify-end':''}`;
+    messageDiv.className = `flex items-end gap-3 ${sender === 'user' ? 'justify-end' : ''}`;
     const bubble = document.createElement('div');
-    bubble.className = `max-w-[420px] rounded-xl px-4 py-3 text-base ${
-      sender==='user' ? 'bg-gradient-to-r from-[#007BFF] to-[#9B59B6] text-white rounded-br-none'
-                      : 'bg-[#2C2C2E] text-[#EAEAEA] rounded-bl-none'}`;
-    bubble.textContent = text;
+    
+    if (sender === 'bot') {
+      bubble.className = 'max-w-[420px] rounded-xl px-4 py-3 text-base bg-[#2C2C2E] text-[#EAEAEA] rounded-bl-none';
+    } else if (sender === 'loading') {
+      bubble.className = 'max-w-[420px] rounded-xl px-4 py-3 text-base bg-[#2C2C2E] text-[#EAEAEA] rounded-bl-none';
+      bubble.innerHTML = '<div class="flex gap-2"><div class="w-2 h-2 bg-[#888] rounded-full animate-bounce"></div><div class="w-2 h-2 bg-[#888] rounded-full animate-bounce" style="animation-delay: 0.2s;"></div><div class="w-2 h-2 bg-[#888] rounded-full animate-bounce" style="animation-delay: 0.4s;"></div></div>';
+    } else {
+      bubble.className = 'max-w-[420px] rounded-xl px-4 py-3 text-base bg-gradient-to-r from-[#007BFF] to-[#9B59B6] text-white rounded-br-none';
+      bubble.textContent = text;
+    }
+    
+    if (sender !== 'loading') {
+      bubble.textContent = text;
+    }
+    
     messageDiv.appendChild(bubble);
+    messageDiv.id = sender === 'loading' ? 'loadingMessage' : '';
     chatContainer.appendChild(messageDiv);
     scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' });
+    
+    return messageDiv;
   }
 
-  function sendMessage(){
+  async function sendMessage() {
     const msg = textarea.value.trim();
-    if(!msg) return;
-    addMessage(msg,'user');
-    textarea.value='';
-    setTimeout(()=>addMessage("AI Response: "+msg,'bot'),400);
+    if (!msg || isLoading) return;
+    
+    // Add user message
+    addMessage(msg, 'user');
+    textarea.value = '';
+    textarea.style.height = 'auto';
+    
+    // Add loading indicator
+    const loadingDiv = addMessage('', 'loading');
+    
+    isLoading = true;
+    sendButton.disabled = true;
+    
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        loadingDiv.remove();
+        addMessage('Authentication required. Please log in again.', 'bot');
+        return;
+      }
+      
+      const response = await fetch('/api/chat/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message: msg })
+      });
+      
+      const data = await response.json();
+      
+      // Remove loading indicator
+      loadingDiv.remove();
+      
+      if (response.ok) {
+        addMessage(data.response, 'bot');
+      } else {
+        addMessage(data.error || 'Failed to get response. Please try again.', 'bot');
+      }
+    } catch (error) {
+      console.error('Chat error:', error);
+      loadingDiv.remove();
+      addMessage('Network error. Please check your connection and try again.', 'bot');
+    } finally {
+      isLoading = false;
+      sendButton.disabled = false;
+      textarea.focus();
+    }
   }
 
-  sendButton.addEventListener('click',sendMessage);
-  textarea.addEventListener('keypress', e=>{
-    if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); }
+  sendButton.addEventListener('click', sendMessage);
+  textarea.addEventListener('keypress', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   });
 
-  textarea.addEventListener('input',()=>{
-    textarea.style.height='auto';
-    textarea.style.height=textarea.scrollHeight+'px';
+  textarea.addEventListener('input', () => {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
   });
+  
+  // Load initial message
+  addMessage("Hi! I'm your AI portfolio assistant. Ask me about skills, projects, or case studies.", 'bot');
+  
+  // Verify auth on load
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+    window.location.href = '/login.html';
+  }
 });
 </script>
 </body>

@@ -17,6 +17,28 @@ const { authenticateToken } = require('./middleware/auth');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Validate API Configuration
+function validateConfiguration() {
+  const warnings = [];
+  
+  if (!process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY === 'sk-or-v1-REPLACE_WITH_YOUR_KEY' || process.env.OPENROUTER_API_KEY.length < 10) {
+    warnings.push('⚠️  OPENROUTER_API_KEY is not properly configured. Chat will use fallback mode.');
+  }
+  
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'your-super-secret-jwt-key-here') {
+    console.warn('⚠️  JWT_SECRET should be changed for production');
+  }
+  
+  if (warnings.length > 0) {
+    warnings.forEach(w => console.log(w));
+  }
+  
+  return true;
+}
+
+// Validate configuration on startup
+validateConfiguration();
+
 // Middleware
 app.use(cors());
 app.use(express.json());

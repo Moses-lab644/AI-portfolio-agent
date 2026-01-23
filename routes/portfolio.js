@@ -63,12 +63,24 @@ router.post('/connect/:platform', async (req, res) => {
   const { username, profileUrl } = req.body;
   const userId = req.user.userId;
   
+  // Validate required fields
+  if (!userId) {
+    return res.status(401).json({ success: false, error: 'User not authenticated' });
+  }
+  
+  if (!platform) {
+    return res.status(400).json({ success: false, error: 'Platform is required' });
+  }
+  
   try {
     let profileData = {};
     
     // Fetch data based on platform
     switch(platform.toLowerCase()) {
       case 'github':
+        if (!username) {
+          return res.status(400).json({ success: false, error: 'GitHub username is required' });
+        }
         try {
           const response = await axios.get(`https://api.github.com/users/${username}`);
           profileData = {
@@ -79,28 +91,33 @@ router.post('/connect/:platform', async (req, res) => {
             avatar_url: response.data.avatar_url
           };
         } catch (error) {
-          return res.status(400).json({ error: 'GitHub user not found' });
+          return res.status(400).json({ success: false, error: 'GitHub user not found' });
         }
         break;
         
       case 'linkedin':
-        try {
-          profileData = { username, profileUrl, platform: 'linkedin' };
-        } catch (error) {
-          profileData = { username, profileUrl };
+        if (!profileUrl) {
+          return res.status(400).json({ success: false, error: 'LinkedIn profile URL is required' });
         }
+        profileData = { username: username || '', profileUrl, platform: 'linkedin' };
         break;
         
       case 'dribbble':
+        if (!username) {
+          return res.status(400).json({ success: false, error: 'Dribbble username is required' });
+        }
         profileData = { username, profileUrl };
         break;
         
       case 'medium':
+        if (!username) {
+          return res.status(400).json({ success: false, error: 'Medium username is required' });
+        }
         profileData = { username, profileUrl };
         break;
         
       default:
-        return res.status(400).json({ error: 'Unsupported platform' });
+        return res.status(400).json({ success: false, error: 'Unsupported platform' });
     }
     
     // Store connection in database
@@ -109,9 +126,10 @@ router.post('/connect/:platform', async (req, res) => {
       [userId, platform, username, profileUrl, JSON.stringify(profileData)]
     );
     
-    res.json({ success: true, data: profileData });
+    res.json({ success: true, data: profileData, message: `${platform} connected successfully` });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to connect platform' });
+    console.error('Platform connection error:', error);
+    res.status(500).json({ success: false, error: 'Failed to connect platform' });
   }
 });
 
